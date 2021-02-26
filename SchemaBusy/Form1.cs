@@ -16,8 +16,8 @@ namespace SchemaBusy
         public Form1()
         {
             InitializeComponent();
-            ActivateCoordsOfAllStops("JR/Zastavky.txt");
-            g = this.CreateGraphics();
+            ActivateCoordsOfAllStops("Zastavky.txt");
+            g = pictureBox1.CreateGraphics();
             //DrawOneLine(ref g, 50, 47, 25, 47);
             
         }
@@ -59,20 +59,20 @@ namespace SchemaBusy
                 if(!loaded)
                     continue;
 
-                DrawALine(this.g, color, s1.X, s1.Y, s2.X, s2.Y);
+                DrawALine(this.g, color, s1.X, s1.Y, s2.X, s2.Y, pictureBox1);
                 Point[] Tr = GetATriangleFromHeight(new Point(s1.X,s1.Y), new Point(s2.X,s2.Y),10);
-                DrawALine(g, Color.Black,2, Tr[0], Tr[1]);
-                DrawALine(g, Color.Black,3, Tr[1], Tr[2]);
-                DrawALine(g, Color.Black,2, Tr[2], Tr[0]);
+                DrawALine(g, Color.Black,2, Tr[0], Tr[1],pictureBox1);
+                DrawALine(g, Color.Black,3, Tr[1], Tr[2],pictureBox1);
+                DrawALine(g, Color.Black,2, Tr[2], Tr[0],pictureBox1);
                 s1 = s2; //pushes the stop to next
             }
         }
-        private void DrawALine(Graphics g, Color color, float fromX, float fromY, float toX, float toY)
+        private void DrawALine(Graphics g, Color color, float fromX, float fromY, float toX, float toY, PictureBox pb)
         {
             Pen applePen = new Pen(color);
             applePen.Width = 5;
             applePen.LineJoin = System.Drawing.Drawing2D.LineJoin.Bevel;
-            g.DrawLine(applePen, fromX, fromY, toX, toY);
+            g.DrawLine(applePen, fromX * pb.Width / 1000, fromY * pb.Height / 1000, toX * pb.Width / 1000 , toY * pb.Height / 1000 );
         }
         private void DrawALine(Graphics g, Color color, int PenW, float fromX, float fromY, float toX, float toY)
         {
@@ -88,12 +88,16 @@ namespace SchemaBusy
             applePen.LineJoin = System.Drawing.Drawing2D.LineJoin.Bevel;
             g.DrawLine(applePen, from, to);
         }
-        private void DrawALine(Graphics g, Color color, int PenW, Point from, Point to)
+        private void DrawALine(Graphics g, Color color, int PenW, Point from, Point to, PictureBox pb)
         {
             Pen applePen = new Pen(color);
             applePen.Width = PenW;
             applePen.LineJoin = System.Drawing.Drawing2D.LineJoin.Bevel;
-            g.DrawLine(applePen, from, to);
+            int fromX = from.X * pb.Width / 1000;
+            int fromY = from.Y * pb.Height / 1000;
+            int toX = to.X * pb.Width / 1000;
+            int toY = to.Y * pb.Height / 1000;
+            g.DrawLine(applePen, new Point(fromX,fromY),new Point(toX,toY));
         }
         private void btnLoadTTs_Click(object sender, EventArgs e)
         {
@@ -112,38 +116,73 @@ namespace SchemaBusy
         public Point[] GetATriangleFromHeight(Point vertexP, Point vertexTarg, int height)
         {
 
-            
-            
-            double slope = (double)(vertexP.Y - vertexTarg.Y)/(vertexP.X - vertexTarg.X);
 
+
+            double slope = (double)(vertexP.Y - vertexTarg.Y) / (vertexP.X - vertexTarg.X);
+            
             double offsetfromP = height / Math.Sqrt(1 + slope * slope);
             double vertAX = (vertexP.X + (offsetfromP * (vertexP.X < vertexTarg.X ? 1 : -1))); //Increase or decrease based on how the line goes
+            
             double vertAY = slope * (vertAX - vertexP.X) + vertexP.Y;
+            if (double.IsInfinity(slope))
+            {
+                vertAY = vertexP.Y + height * (vertexP.X < vertexTarg.X ? 1 : -1);
+            }
             Point vertexA = new Point((int)vertAX, (int)vertAY);
 
 
             double halfLength = (Math.Sqrt(3) * height) / 3;
-            double perpSlope = -1 / slope;
-            double perpOffset = vertexP.Y - perpSlope * vertexP.X;
-            double x = vertexP.X;
-            double y = vertexP.Y;
-            double d = halfLength;
-            double a = perpSlope;
-            double b = perpOffset;
 
-            //Solving these two equations for leftX:
-            //(leftX-x)^2+(leftY-y)^2 = d^2;
-            //leftY = a*leftX+b;
-            double leftPointX = ((x + a * y - a * b)
-                + Math.Sqrt(-(a * a * x * x) + (2 * a * x * y) - (2 * a * b * x) + (a * a * d * d) + (2 * b * y) + (d * d) - (b * b) - (y * y)))
-                / (1 + a * a);
-            //Another solution for quadratic equation
-            double rightPointX = ((x + a * y - a * b)
-                - Math.Sqrt(-(a * a * x * x) + (2 * a * x * y) - (2 * a * b * x) + (a * a * d * d) + (2 * b * y) + (d * d) -( b * b) - (y * y)))
-                / (1 + a * a);
 
-            double leftPointY = a * leftPointX + b;
-            double rightPointY = a * rightPointX + b;
+
+            double leftPointX;
+            double rightPointX;
+
+            double leftPointY;
+            double rightPointY;
+            if (slope == 0)
+            {
+                leftPointX = vertexP.X - halfLength;
+                rightPointX = vertexP.X + halfLength;
+
+                leftPointY = vertexP.Y;
+                rightPointY = vertexP.Y;
+            }
+            else if(double.IsInfinity(slope))
+            {
+                leftPointX = vertexP.X;
+                rightPointX = vertexP.X;
+
+                leftPointY = vertexP.Y - halfLength;
+                rightPointY = vertexP.Y + halfLength;
+            }
+            else
+            {
+                double perpSlope = -1 / slope;
+
+
+                double perpOffset = vertexP.Y - perpSlope * vertexP.X;
+                double x = vertexP.X;
+                double y = vertexP.Y;
+                double d = halfLength;
+                double a = perpSlope;
+                double b = perpOffset;
+
+                //Solving these two equations for leftX:
+                //(leftX-x)^2+(leftY-y)^2 = d^2;
+                //leftY = a*leftX+b;
+                leftPointX = ((x + a * y - a * b)
+                    + Math.Sqrt(-(a * a * x * x) + (2 * a * x * y) - (2 * a * b * x) + (a * a * d * d) + (2 * b * y) + (d * d) - (b * b) - (y * y)))
+                    / (1 + a * a);
+                //Another solution for quadratic equation
+                rightPointX = ((x + a * y - a * b)
+                    - Math.Sqrt(-(a * a * x * x) + (2 * a * x * y) - (2 * a * b * x) + (a * a * d * d) + (2 * b * y) + (d * d) - (b * b) - (y * y)))
+                    / (1 + a * a);
+
+                leftPointY = a * leftPointX + b;
+                rightPointY = a * rightPointX + b;
+            }
+            
 
             Point[] triangle = new Point[4] { vertexA, new Point((int)leftPointX, (int)leftPointY), new Point((int)rightPointX, (int)rightPointY), vertexP };
             return triangle;
@@ -178,7 +217,10 @@ namespace SchemaBusy
                 ref string line = ref TimeTables[i];
                 if (line is null || line == "" || line.Length == 0)
                     continue;
-                var sr = new StreamReader(line);
+                string[] split = line.Split(' ');
+                int lineNumber = int.Parse(split[0]);
+                string stopListX = split[1];
+                var sr = new StreamReader(stopListX);
                 List<string> reqStops = new List<string>();
                 string ln = sr.ReadLine();
                 while (ln != null && ln!="")
@@ -188,13 +230,13 @@ namespace SchemaBusy
                 }
                 string[] requestedStops = reqStops.ToArray();
                 //DrawALine(this.g, Color.Red, 0, 0, 500, 500);
-                DrawOneTour(requestedStops,LineColors[j++]);
+                DrawOneTour(requestedStops,LineColors[lineNumber-1]);
             }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            this.Invalidate();
+            pictureBox1.Invalidate();
         }
     }
 }
