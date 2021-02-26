@@ -1,0 +1,8 @@
+Staré Město,,obchodní zóna
+Uherské Hradiště,,aut.nádr.
+Uherské Hradiště,Mařatice,Mesit
+Uherské Hradiště,Mařatice,Jaktáře
+Uherské Hradiště,Jarošov,U Bagru
+Uherské Hradiště,Jarošov,pivovar
+Uherské Hradiště,Jarošov,náves
+Uherské Hradiště,Jarošov,Louky

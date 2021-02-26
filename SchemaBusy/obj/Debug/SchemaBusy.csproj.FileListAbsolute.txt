@@ -1,0 +1,10 @@
+C:\Users\Frantisek\source\repos\SchemaBusy\SchemaBusy\bin\Debug\SchemaBusy.exe.config
+C:\Users\Frantisek\source\repos\SchemaBusy\SchemaBusy\bin\Debug\SchemaBusy.exe
+C:\Users\Frantisek\source\repos\SchemaBusy\SchemaBusy\bin\Debug\SchemaBusy.pdb
+C:\Users\Frantisek\source\repos\SchemaBusy\SchemaBusy\obj\Debug\SchemaBusy.csprojAssemblyReference.cache
+C:\Users\Frantisek\source\repos\SchemaBusy\SchemaBusy\obj\Debug\SchemaBusy.Form1.resources
+C:\Users\Frantisek\source\repos\SchemaBusy\SchemaBusy\obj\Debug\SchemaBusy.Properties.Resources.resources
+C:\Users\Frantisek\source\repos\SchemaBusy\SchemaBusy\obj\Debug\SchemaBusy.csproj.GenerateResource.cache
+C:\Users\Frantisek\source\repos\SchemaBusy\SchemaBusy\obj\Debug\SchemaBusy.csproj.CoreCompileInputs.cache
+C:\Users\Frantisek\source\repos\SchemaBusy\SchemaBusy\obj\Debug\SchemaBusy.exe
+C:\Users\Frantisek\source\repos\SchemaBusy\SchemaBusy\obj\Debug\SchemaBusy.pdb
