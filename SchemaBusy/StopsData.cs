@@ -42,6 +42,14 @@ namespace SchemaBusy
 
     class Platform : Stop
     {
+        public new int X
+        {
+            get => base.X + newX;
+        }
+        public new int Y
+        {
+            get => base.Y + newX;
+        }
         public int newX;
         public int newY;
         public int Line;
@@ -57,5 +65,23 @@ namespace SchemaBusy
     {
         public List<Stop> Zastavky = new List<Stop>();
         public int Cislo;
+        public string Konecna;
+
+        public Linka (int cislo, List<Stop>zast)
+        {
+            this.Cislo = cislo;
+            this.Zastavky = zast;
+            this.Konecna = Zastavky[Zastavky.Count - 1].Name;
+        }
+        public void AddReverseDirection(ref Linka lnk)
+        {
+            if (lnk.Zastavky[0].Name != this.Konecna)
+                Zastavky.Add(lnk.Zastavky[0]);
+            for(int i = 1; i < lnk.Zastavky.Count; ++i)
+            {
+                Zastavky.Add(lnk.Zastavky[i]);
+            }
+            lnk = null;
+        }
     }
 }

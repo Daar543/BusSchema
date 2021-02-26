@@ -45,7 +45,7 @@ namespace SchemaBusy
                 line = sr.ReadLine();
             }
         }
-        private void DrawOneTour(string[] stoplist, Color color)
+        /*private void DrawOneTour(string[] stoplist, Color color)
         {
             int i = 0;
             Stop s1;
@@ -65,6 +65,22 @@ namespace SchemaBusy
                 DrawALine(g, Color.Black,2, Tr[0], Tr[1],pictureBox1);
                 DrawALine(g, Color.Black,3, Tr[1], Tr[2],pictureBox1);
                 DrawALine(g, Color.Black,2, Tr[2], Tr[0],pictureBox1);
+                s1 = s2; //pushes the stop to next
+            }
+        }*/
+        private void DrawOneTour(List<Stop> stoplist, Color color)
+        {
+            int i = 0;
+            Stop s1 = stoplist[0];
+            Stop s2;
+            for (i = 0; i < stoplist.Count; ++i)
+            {
+                s2 = stoplist[i];
+                DrawALine(this.g, color, s1.X, s1.Y, s2.X, s2.Y, pictureBox1);
+                Point[] Tr = GetATriangleFromHeight(new Point(s1.X, s1.Y), new Point(s2.X, s2.Y), 10);
+                DrawALine(g, Color.Black, 2, Tr[0], Tr[1], pictureBox1);
+                DrawALine(g, Color.Black, 3, Tr[1], Tr[2], pictureBox1);
+                DrawALine(g, Color.Black, 2, Tr[2], Tr[0], pictureBox1);
                 s1 = s2; //pushes the stop to next
             }
         }
@@ -102,7 +118,8 @@ namespace SchemaBusy
         }
         private void btnLoadTTs_Click(object sender, EventArgs e)
         {
-            string[] TimeTables = txbJR.Text.Split(Environment.NewLine.ToCharArray());
+            return;
+            /*string[] TimeTables = txbJR.Text.Split(Environment.NewLine.ToCharArray());
             int j = 0;
             for(int i = 0; i < TimeTables.Length; ++i)
             {
@@ -112,8 +129,23 @@ namespace SchemaBusy
                 string[]requestedStops = GetStopsFromTimeTable(line);
                 //DrawALine(this.g, Color.Red, 0, 0, 500, 500);
                 DrawOneTour(requestedStops,LineColors[j++]);
+            }*/
+        }
+        private void NormalizeVertically(ref Platform[] platforms, int offset)
+        {
+            double average = 0;
+            for(int i = 0; i < platforms.Length; ++i)
+            {
+                average += platforms[i].Y;
+            }
+            average /= platforms.Length;
+            float median = platforms.Length / 2.0f;
+            for (int i = 0; i < platforms.Length; ++i)
+            {
+                platforms[i].newY = (int)(average + offset * (i - median));
             }
         }
+        Linka[][] LinkyZastavky;
         public Point[] GetATriangleFromHeight(Point vertexP, Point vertexTarg, int height)
         {
 
@@ -220,16 +252,22 @@ namespace SchemaBusy
                 int lineNumber = int.Parse(split[0]);
                 string stopListX = split[1];
                 var sr = new StreamReader(stopListX);
-                List<string> reqStops = new List<string>();
+                //List<string> stopNames = new List<string>();
+                List<Stop> completeStops = new List<Stop>();
+                Stop st;
                 string ln = sr.ReadLine();
                 while (ln != null && ln!="")
                 {
-                    reqStops.Add(ln);
+                    //stopNames.Add(ln);
+                    if (AllStops.TryGetValue(ln, out st))
+                        completeStops.Add(st);
+                    
                     ln = sr.ReadLine();
                 }
-                string[] requestedStops = reqStops.ToArray();
+                Linka Lin = new Linka(lineNumber, completeStops);
+                //string[] requestedStops = reqStops.ToArray();
                 //DrawALine(this.g, Color.Red, 0, 0, 500, 500);
-                DrawOneTour(requestedStops,LineColors[lineNumber-1]);
+                DrawOneTour(completeStops,LineColors[lineNumber-1]);
             }
         }
 
