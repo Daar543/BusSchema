@@ -79,8 +79,8 @@ namespace SchemaBusy
             this.txbSZ.Name = "txbSZ";
             this.txbSZ.Size = new System.Drawing.Size(120, 106);
             this.txbSZ.TabIndex = 3;
-            this.txbSZ.Text = "4 SZ/805004-T.txt\r\n5 SZ/805005-T.txt\r\n4 SZ/805004-Z.txt\r\n2 SZ/805002-T.txt\r\n9 SZ/" +
-    "805009-1-T.txt";
+            this.txbSZ.Text = "9 SZ/805009-1-T.txt\r\n4 SZ/805004-T.txt\r\n4 SZ/805004-Z.txt\r\n2 SZ/805002-T.txt\r\n8 S" +
+    "Z/805008-T.txt\r\n8 SZ/805008-Z.txt\r\n7 SZ/805007-T.txt\r\n5 SZ/805005-T.txt";
             // 
             // btnDelete
             // 

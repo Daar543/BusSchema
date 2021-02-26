@@ -21,6 +21,7 @@ namespace SchemaBusy
             //DrawOneLine(ref g, 50, 47, 25, 47);
             
         }
+        const int referenceSize = 1000;
         public Color[] LineColors =
         {
             Color.Green,Color.LightBlue,Color.Red,Color.Purple,Color.Yellow,Color.Gray,Color.Orange,Color.DarkBlue,Color.Black
@@ -40,7 +41,7 @@ namespace SchemaBusy
             while (line != null)
             {
                 string[] linesp = line.Split('\t');
-                AllStops.AddStop(linesp[0], double.Parse(linesp[1]), double.Parse(linesp[2]));
+                AllStops.AddStop(linesp[0], double.Parse(linesp[1]), double.Parse(linesp[2]),linesp[0]);
                 line = sr.ReadLine();
             }
         }
@@ -72,7 +73,7 @@ namespace SchemaBusy
             Pen applePen = new Pen(color);
             applePen.Width = 5;
             applePen.LineJoin = System.Drawing.Drawing2D.LineJoin.Bevel;
-            g.DrawLine(applePen, fromX * pb.Width / 1000, fromY * pb.Height / 1000, toX * pb.Width / 1000 , toY * pb.Height / 1000 );
+            g.DrawLine(applePen, fromX * pb.Width / referenceSize, fromY * pb.Height / referenceSize, toX * pb.Width / referenceSize , toY * pb.Height / referenceSize );
         }
         private void DrawALine(Graphics g, Color color, int PenW, float fromX, float fromY, float toX, float toY)
         {
@@ -93,10 +94,10 @@ namespace SchemaBusy
             Pen applePen = new Pen(color);
             applePen.Width = PenW;
             applePen.LineJoin = System.Drawing.Drawing2D.LineJoin.Bevel;
-            int fromX = from.X * pb.Width / 1000;
-            int fromY = from.Y * pb.Height / 1000;
-            int toX = to.X * pb.Width / 1000;
-            int toY = to.Y * pb.Height / 1000;
+            int fromX = from.X * pb.Width / referenceSize;
+            int fromY = from.Y * pb.Height / referenceSize;
+            int toX = to.X * pb.Width / referenceSize;
+            int toY = to.Y * pb.Height / referenceSize;
             g.DrawLine(applePen, new Point(fromX,fromY),new Point(toX,toY));
         }
         private void btnLoadTTs_Click(object sender, EventArgs e)
@@ -115,8 +116,6 @@ namespace SchemaBusy
         }
         public Point[] GetATriangleFromHeight(Point vertexP, Point vertexTarg, int height)
         {
-
-
 
             double slope = (double)(vertexP.Y - vertexTarg.Y) / (vertexP.X - vertexTarg.X);
             
